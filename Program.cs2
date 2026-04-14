@@ -1,0 +1,188 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp11
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+        }
+            public class DynamicList
+        {
+            private class Node
+            {
+                private object element;
+                private Node next;
+
+                public object Element
+                {
+                    get { return element; }
+                    set { element = value; }
+                }
+
+                public Node Next
+                {
+                    get { return next; }
+                    set { next = value; }
+                }
+
+                public Node(object element, Node prevNode)
+                {
+                    this.element = element;
+                    prevNode.next = this;
+                }
+
+                public Node(object element)
+                {
+                    this.element = element;
+                    this.next = null;
+                }
+            }
+
+            private Node head;
+            private Node tail;
+            private int count;
+
+            public DynamicList()
+            {
+                this.head = null;
+                this.tail = null;
+                this.count = 0;
+            }
+
+            public void Add(object item)
+            {
+                if (head == null)
+                {
+                    head = new Node(item);
+                    tail = head;
+                }
+                else
+                {
+                    Node newNode = new Node(item, tail);
+                    tail = newNode;
+                }
+
+                count++;
+            }
+
+            public object Remove(int index)
+            {
+                if (index < 0 || index >= count)
+                    throw new ArgumentOutOfRangeException();
+
+                Node current = head;
+                Node previous = null;
+
+                for (int i = 0; i < index; i++)
+                {
+                    previous = current;
+                    current = current.Next;
+                }
+
+                if (previous == null)
+                {
+                    head = current.Next;
+                }
+                else
+                {
+                    previous.Next = current.Next;
+                }
+
+                if (current == tail)
+                {
+                    tail = previous;
+                }
+
+                count--;
+                return current.Element;
+            }
+
+            public int Remove(object item)
+            {
+                Node current = head;
+                Node previous = null;
+                int index = 0;
+
+                while (current != null)
+                {
+                    if (current.Element.Equals(item))
+                    {
+                        if (previous == null)
+                        {
+                            head = current.Next;
+                        }
+                        else
+                        {
+                            previous.Next = current.Next;
+                        }
+
+                        if (current == tail)
+                        {
+                            tail = previous;
+                        }
+
+                        count--;
+                        return index;
+                    }
+
+                    previous = current;
+                    current = current.Next;
+                    index++;
+                }
+
+                return -1;
+            }
+
+            public int IndexOf(object item)
+            {
+                Node current = head;
+                int index = 0;
+
+                while (current != null)
+                {
+                    if (current.Element.Equals(item))
+                        return index;
+
+                    current = current.Next;
+                    index++;
+                }
+
+                return -1;
+            }
+
+            public bool Contains(object item)
+            {
+                return IndexOf(item) != -1;
+            }
+
+            public object this[int index]
+            {
+                get
+                {
+                    if (index < 0 || index >= count)
+                        throw new ArgumentOutOfRangeException();
+
+                    Node current = head;
+
+                    for (int i = 0; i < index; i++)
+                    {
+                        current = current.Next;
+                    }
+
+                    return current.Element;
+                }
+            }
+
+            public int Count
+            {
+                get { return count; }
+            }
+        }
+    }
+}
+
